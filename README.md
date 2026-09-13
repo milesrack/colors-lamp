@@ -16,7 +16,7 @@ A LAMP web application for managing your favourite colours.
 
 - A VPS running Ubuntu 24.04
 - SSH access with sudo privileges
-- A domain pointing to your VPS's IP address
+- A domain pointing to your VPS's public IP address
 - Inbound TCP ports 80 and 443 allowed through any server or provider firewalls
 
 ### Install dependencies
