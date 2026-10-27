@@ -95,3 +95,17 @@ test('expired server sessions cannot be extended by a forged browser identity', 
     });
     assert.equal(response.status, 401);
 });
+
+test('quotes, backslashes, Unicode and markup round-trip as JSON values', async () => {
+    const user = client();
+    await login(user);
+    const colours = ['roundtrip "red"', 'roundtrip back\\slash', 'roundtrip café 名', 'roundtrip <b>red</b>'];
+    for (const color of colours) {
+        assert.equal((await user.post('AddColor', { color })).status, 200);
+    }
+    assert.deepEqual((await user.post('SearchColors', { search: 'roundtrip' })).body.results, colours);
+    const quoted = client();
+    const response = await quoted.post('Login', { login: 'quoted', password: 'test-password' });
+    assert.equal(response.body.firstName, 'A"\\名');
+    assert.equal(response.body.lastName, '<b>User</b>');
+});

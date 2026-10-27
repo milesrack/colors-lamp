@@ -8,12 +8,18 @@ const source = readFileSync(new URL('../public/js/code.js', import.meta.url), 'u
 function browser() {
     const elements = new Map();
     function element(id) {
-        if (!elements.has(id)) elements.set(id, { value: '', innerHTML: '', textContent: '', style: {} });
+        if (!elements.has(id)) elements.set(id, {
+            value: '', innerHTML: '', style: {}, children: [], valueText: '',
+            get textContent() { return this.valueText + this.children.map(child => child.textContent).join(''); },
+            set textContent(value) { this.valueText = value; this.children = []; },
+            replaceChildren(...children) { this.valueText = ''; this.children = children; },
+            append(...children) { this.children.push(...children); },
+        });
         return elements.get(id);
     }
     const requests = [];
     const context = {
-        document: { cookie: '', getElementById: element, getElementsByTagName: () => [element('colorList')] },
+        document: { cookie: '', getElementById: element, getElementsByTagName: () => [element('colorList')], createTextNode: text => ({ nodeType: 3, textContent: text }), createElement: tag => ({ nodeType: 1, tagName: tag.toUpperCase(), textContent: '' }) },
         window: { location: { href: '' } },
         XMLHttpRequest: class {
             constructor() { requests.push(this); this.headers = {}; }
@@ -71,3 +77,22 @@ for (const action of ['addColor()', 'searchColor()']) {
         assert.equal(app.context.window.location.href, 'index.html');
     });
 }
+
+test('account names are displayed as text rather than HTML', () => {
+    const app = browser();
+    app.run('loadSession()');
+    app.respond(200, { id: 1, firstName: '<b>Alpha</b>', lastName: 'User', error: '' });
+    assert.equal(app.element('userName').textContent, 'Logged in as <b>Alpha</b> User');
+    assert.equal(app.element('userName').innerHTML, '');
+});
+
+test('stored colour markup remains literal text with separate result lines', () => {
+    const app = browser();
+    app.run('searchColor()');
+    app.respond(200, { results: ['<b>red</b>', 'blue'], error: '' });
+    const list = app.element('colorList');
+    assert.equal(list.innerHTML, '');
+    assert.equal(list.textContent, '<b>red</b>blue');
+    assert.deepEqual(list.children.map(child => child.nodeType), [3, 1, 3]);
+    assert.equal(list.children[1].tagName, 'BR');
+});

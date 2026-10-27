@@ -7,7 +7,7 @@ $user = requireUser();
 
 	$inData = getRequestInfo();
 
-	$searchResults = "";
+	$searchResults = [];
 	$searchCount = 0;
 
     $conn = require dirname(__DIR__) . '/config/database.php';
@@ -26,12 +26,8 @@ $user = requireUser();
 
 		while($row = $result->fetch_assoc())
 		{
-			if( $searchCount > 0 )
-			{
-				$searchResults .= ",";
-			}
-			$searchCount++;
-			$searchResults .= '"' . $row["Name"] . '"';
+            $searchCount++;
+            $searchResults[] = $row["Name"];
 		}
 
 		if( $searchCount == 0 )
@@ -55,18 +51,18 @@ $user = requireUser();
 	function sendResultInfoAsJson( $obj )
 	{
 		header('Content-type: application/json');
-		echo $obj;
+		echo json_encode($obj, JSON_THROW_ON_ERROR);
 	}
 
 	function returnWithError( $err )
 	{
-		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
+		$retValue = ['id' => 0, 'firstName' => '', 'lastName' => '', 'error' => $err];
 		sendResultInfoAsJson( $retValue );
 	}
 
 	function returnWithInfo( $searchResults )
 	{
-		$retValue = '{"results":[' . $searchResults . '],"error":""}';
+		$retValue = ['results' => $searchResults, 'error' => ''];
 		sendResultInfoAsJson( $retValue );
 	}
 

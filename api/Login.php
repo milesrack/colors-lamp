@@ -54,18 +54,18 @@ $_SESSION = [];
 	function sendResultInfoAsJson( $obj )
 	{
 		header('Content-type: application/json');
-		echo $obj;
+		echo json_encode($obj, JSON_THROW_ON_ERROR);
 	}
 
 	function returnWithError( $err )
 	{
-		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
+		$retValue = ['id' => 0, 'firstName' => '', 'lastName' => '', 'error' => $err];
 		sendResultInfoAsJson( $retValue );
 	}
 
 	function returnWithInfo( $firstName, $lastName, $id )
 	{
-		$retValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}';
+		$retValue = ['id' => $id, 'firstName' => $firstName, 'lastName' => $lastName, 'error' => ''];
 		sendResultInfoAsJson( $retValue );
 	}
 

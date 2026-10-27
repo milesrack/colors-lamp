@@ -7,7 +7,7 @@ function doLogin()
 		let login = document.getElementById("loginName").value;
 		let password = document.getElementById("loginPassword").value;
 
-		document.getElementById("loginResult").innerHTML = "";
+		document.getElementById("loginResult").textContent = "";
 
 		let tmp = {login:login,password:password};
 
@@ -29,7 +29,7 @@ function doLogin()
 
 				if( userId < 1 )
 				{
-					document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
+					document.getElementById("loginResult").textContent = "User/Password combination incorrect";
 					return;
 				}
 
@@ -41,7 +41,7 @@ function doLogin()
 	}
 	catch(err)
 	{
-		document.getElementById("loginResult").innerHTML = err.message;
+		document.getElementById("loginResult").textContent = err.message;
 	}
 
 }
@@ -61,7 +61,7 @@ function loadSession()
         else if (this.status == 200)
         {
             let user = JSON.parse(xhr.responseText);
-            document.getElementById("userName").innerHTML = "Logged in as " + user.firstName + " " + user.lastName;
+            document.getElementById("userName").textContent = "Logged in as " + user.firstName + " " + user.lastName;
         }
     };
     xhr.send("{}");
@@ -85,7 +85,7 @@ function doLogout()
 function addColor()
 {
 	let newColor = document.getElementById("colorText").value;
-	document.getElementById("colorAddResult").innerHTML = "";
+	document.getElementById("colorAddResult").textContent = "";
 
 	let tmp = {color:newColor};
 	let jsonPayload = JSON.stringify( tmp );
@@ -106,14 +106,14 @@ function addColor()
             }
 			if (this.readyState == 4 && this.status == 200)
 			{
-				document.getElementById("colorAddResult").innerHTML = "Color has been added";
+				document.getElementById("colorAddResult").textContent = "Color has been added";
 			}
 		};
 		xhr.send(jsonPayload);
 	}
 	catch(err)
 	{
-		document.getElementById("colorAddResult").innerHTML = err.message;
+		document.getElementById("colorAddResult").textContent = err.message;
 	}
 
 }
@@ -121,9 +121,8 @@ function addColor()
 function searchColor()
 {
 	let srch = document.getElementById("searchText").value;
-	document.getElementById("colorSearchResult").innerHTML = "";
+	document.getElementById("colorSearchResult").textContent = "";
 
-	let colorList = "";
 
 	let tmp = {search:srch};
 	let jsonPayload = JSON.stringify( tmp );
@@ -144,26 +143,23 @@ function searchColor()
             }
 			if (this.readyState == 4 && this.status == 200)
 			{
-				document.getElementById("colorSearchResult").innerHTML = "Color(s) has been retrieved";
+				document.getElementById("colorSearchResult").textContent = "Color(s) has been retrieved";
 				let jsonObject = JSON.parse( xhr.responseText );
 
-				for( let i=0; i<jsonObject.results.length; i++ )
-				{
-					colorList += jsonObject.results[i];
-					if( i < jsonObject.results.length - 1 )
-					{
-						colorList += "<br />\r\n";
-					}
-				}
-
-				document.getElementsByTagName("p")[0].innerHTML = colorList;
+                let list = document.getElementById("colorList");
+                list.replaceChildren();
+                for (let i = 0; i < jsonObject.results.length; i++)
+                {
+                    if (i > 0) list.append(document.createElement("br"));
+                    list.append(document.createTextNode(jsonObject.results[i]));
+                }
 			}
 		};
 		xhr.send(jsonPayload);
 	}
 	catch(err)
 	{
-		document.getElementById("colorSearchResult").innerHTML = err.message;
+		document.getElementById("colorSearchResult").textContent = err.message;
 	}
 
 }
