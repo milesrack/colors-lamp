@@ -1,7 +1,12 @@
 <?php
 
+require_once dirname(__DIR__) . '/config/session.php';
+requireJsonPost();
+startSession();
+$_SESSION = [];
+
 	$inData = getRequestInfo();
-	
+
 	$id = 0;
 	$firstName = "";
 	$lastName = "";
@@ -22,6 +27,9 @@
 			{
 				if( password_verify( $inData["password"], $row["Password"] ) )
 				{
+					session_regenerate_id(true);
+					$_SESSION['user'] = ['id' => $row['ID'], 'firstName' => $row['firstName'], 'lastName' => $row['lastName']];
+					$_SESSION['expiresAt'] = time() + 1200;
 					returnWithInfo( $row['firstName'], $row['lastName'], $row['ID'] );
 				}
 				else
@@ -37,7 +45,7 @@
 		$stmt->close();
 		$conn->close();
 	}
-	
+
 	function getRequestInfo()
 	{
 		return json_decode(file_get_contents('php://input'), true);
@@ -48,17 +56,17 @@
 		header('Content-type: application/json');
 		echo $obj;
 	}
-	
+
 	function returnWithError( $err )
 	{
 		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
 		sendResultInfoAsJson( $retValue );
 	}
-	
+
 	function returnWithInfo( $firstName, $lastName, $id )
 	{
 		$retValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}';
 		sendResultInfoAsJson( $retValue );
 	}
-	
+
 ?>
