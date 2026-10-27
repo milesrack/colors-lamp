@@ -1,14 +1,20 @@
 <?php
+
+require_once dirname(__DIR__) . '/config/session.php';
+requireJsonPost();
+startSession();
+$user = requireUser();
+
 	$inData = getRequestInfo();
-	
+
 	$color = $inData["color"];
-	$userId = $inData["userId"];
+	$userId = $user["id"];
 
     $conn = require dirname(__DIR__) . '/config/database.php';
-	if ($conn->connect_error) 
+	if ($conn->connect_error)
 	{
 		returnWithError( $conn->connect_error );
-	} 
+	}
 	else
 	{
 		$stmt = $conn->prepare("INSERT into Colors (UserId,Name) VALUES(?,?)");
@@ -29,11 +35,11 @@
 		header('Content-type: application/json');
 		echo $obj;
 	}
-	
+
 	function returnWithError( $err )
 	{
 		$retValue = '{"error":"' . $err . '"}';
 		sendResultInfoAsJson( $retValue );
 	}
-	
+
 ?>
