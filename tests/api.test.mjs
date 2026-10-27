@@ -109,3 +109,66 @@ test('quotes, backslashes, Unicode and markup round-trip as JSON values', async 
     assert.equal(response.body.firstName, 'A"\\名');
     assert.equal(response.body.lastName, '<b>User</b>');
 });
+
+test('empty searches return all owned colours and no matches return an empty array', async () => {
+    const user = client();
+    await login(user);
+    const all = await user.post('SearchColors', { search: '' });
+    assert.equal(all.status, 200);
+    assert.ok(all.body.results.includes('red'));
+    const none = await user.post('SearchColors', { search: 'does-not-exist' });
+    assert.equal(none.status, 200);
+    assert.deepEqual(none.body.results, []);
+    assert.equal(none.body.error, '');
+});
+
+test('malformed JSON and non-object bodies are rejected consistently', async () => {
+    const user = client();
+    await login(user);
+    for (const body of ['{', 'null', '[]', '"string"', '1', '']) {
+        const response = await fetch(`${base}/api/AddColor.php`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: user.cookie }, body,
+        });
+        assert.equal(response.status, 400, body);
+        assert.ok((await response.json()).error);
+    }
+});
+
+test('required strings and schema length limits are validated before database access', async () => {
+    const user = client();
+    await login(user);
+    for (const color of [undefined, null, 1, [], {}, '', '   ', 'x'.repeat(256), '名'.repeat(256)]) {
+        assert.equal((await user.post('AddColor', { color })).status, 422);
+    }
+    for (const search of [undefined, null, 1, [], {}, 'x'.repeat(256)]) {
+        assert.equal((await user.post('SearchColors', { search })).status, 422);
+    }
+    for (const body of [{}, { login: [], password: 'x' }, { login: 'x'.repeat(51), password: 'x' }, { login: 'alpha', password: '' }, { login: 'alpha', password: null }]) {
+        assert.equal((await client().post('Login', body)).status, 422);
+    }
+    assert.equal((await user.post('AddColor', { color: '名'.repeat(255) })).status, 200);
+    assert.deepEqual((await user.post('SearchColors', { search: '名'.repeat(255) })).body.results, ['名'.repeat(255)]);
+});
+
+test('failed login returns HTTP 401 without retaining an authenticated session', async () => {
+    const user = client();
+    await login(user);
+    assert.equal((await user.post('Login', { login: 'alpha', password: 'incorrect' })).status, 401);
+    assert.equal((await user.post('Session')).status, 401);
+});
+
+test('oversized JSON bodies are rejected without processing them', async () => {
+    const response = await fetch(`${base}/api/Login.php`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: 'alpha', password: 'x'.repeat(65536) }),
+    });
+    assert.equal(response.status, 413);
+    assert.ok((await response.json()).error);
+});
+
+test('password whitespace is preserved during authentication', async () => {
+    const user = client();
+    assert.equal((await user.post('Login', { login: 'spaced', password: 'test-password' })).status, 401);
+    const valid = await user.post('Login', { login: 'spaced', password: '  test-password  ' });
+    assert.equal(valid.status, 200);
+    assert.equal(valid.body.id, 4);
+});
