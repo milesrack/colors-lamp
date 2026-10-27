@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mxfile host="Electron" type="device" version="31.5.2">
   <diagram id="Class" name="Class">
-    <mxGraphModel dx="1110" dy="620" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1110" pageHeight="620" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1110" dy="270" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1110" pageHeight="270" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -40,28 +40,6 @@
         </mxCell>
         <mxCell id="many" value="0..*" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;text;strokeColor=none;fillColor=none;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="786" y="77" width="45" height="25" />
-        </mxCell>
-        <mxCell id="session-functions" value="«utility»&lt;br&gt;session.php" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=15;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;swimlane;startSize=55;horizontal=1;rounded=0;fontStyle=1;fontSize=17;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="15" y="355" width="280" height="167" />
-        </mxCell>
-        <mxCell id="session-functions-operations" value="&lt;u&gt;+ requireJsonPost() : void&lt;/u&gt;&lt;br&gt;&lt;u&gt;+ startSession() : void&lt;/u&gt;&lt;br&gt;&lt;u&gt;+ requireUser() : Array&lt;/u&gt;&lt;br&gt;&lt;u&gt;+ destroySession() : void&lt;/u&gt;" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=15;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="27" y="420" width="256" height="97" />
-        </mxCell>
-        <mxCell id="client-functions" value="«utility»&lt;br&gt;code.js" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=15;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;swimlane;startSize=55;horizontal=1;rounded=0;fontStyle=1;fontSize=17;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="385" y="355" width="300" height="190" />
-        </mxCell>
-        <mxCell id="client-functions-operations" value="&lt;u&gt;+ doLogin() : void&lt;/u&gt;&lt;br&gt;&lt;u&gt;+ loadSession() : void&lt;/u&gt;&lt;br&gt;&lt;u&gt;+ doLogout() : void&lt;/u&gt;&lt;br&gt;&lt;u&gt;+ addColor() : void&lt;/u&gt;&lt;br&gt;&lt;u&gt;+ searchColor() : void&lt;/u&gt;" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=15;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="397" y="420" width="276" height="120" />
-        </mxCell>
-        <mxCell id="session-dependency" value="manages" style="edgeStyle=none;html=1;fontFamily=Helvetica;fontSize=14;fontColor=#000000;strokeColor=#000000;labelBackgroundColor=#FFFFFF;dashed=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="session-functions" target="session">
-          <mxGeometry as="geometry" relative="1">
-            <mxPoint as="offset" x="28" y="0" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="client-dependency" value="uses" style="edgeStyle=none;html=1;fontFamily=Helvetica;fontSize=14;fontColor=#000000;strokeColor=#000000;labelBackgroundColor=#FFFFFF;dashed=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="client-functions" target="user">
-          <mxGeometry as="geometry" relative="1">
-            <mxPoint as="offset" x="28" y="0" />
-          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
