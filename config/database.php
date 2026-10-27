@@ -11,6 +11,8 @@ $dotenv->required([
     'DB_PASSWORD',
 ])->notEmpty();
 
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 $conn = new mysqli(
     $_ENV['DB_HOST'],
     $_ENV['DB_USER'],

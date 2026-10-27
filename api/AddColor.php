@@ -1,39 +1,15 @@
 <?php
-	$inData = getRequestInfo();
-	
-	$color = $inData["color"];
-	$userId = $inData["userId"];
 
-    $conn = require dirname(__DIR__) . '/config/database.php';
-	if ($conn->connect_error) 
-	{
-		returnWithError( $conn->connect_error );
-	} 
-	else
-	{
-		$stmt = $conn->prepare("INSERT into Colors (UserId,Name) VALUES(?,?)");
-		$stmt->bind_param("ss", $userId, $color);
-		$stmt->execute();
-		$stmt->close();
-		$conn->close();
-		returnWithError("");
-	}
+require_once dirname(__DIR__) . '/config/api.php';
+$user = requireUser();
+$data = readRequest();
+$color = requireString($data, 'color', 255);
+$userId = $user['id'];
 
-	function getRequestInfo()
-	{
-		return json_decode(file_get_contents('php://input'), true);
-	}
-
-	function sendResultInfoAsJson( $obj )
-	{
-		header('Content-type: application/json');
-		echo $obj;
-	}
-	
-	function returnWithError( $err )
-	{
-		$retValue = '{"error":"' . $err . '"}';
-		sendResultInfoAsJson( $retValue );
-	}
-	
-?>
+$conn = require dirname(__DIR__) . '/config/database.php';
+$stmt = $conn->prepare('INSERT INTO Colors (UserId, Name) VALUES (?, ?)');
+$stmt->bind_param('is', $userId, $color);
+$stmt->execute();
+$stmt->close();
+$conn->close();
+sendJson(['error' => '']);
