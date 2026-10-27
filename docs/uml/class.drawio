@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="Electron" type="device" version="31.5.2">
+  <diagram id="Class" name="Class">
+    <mxGraphModel dx="1110" dy="270" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1110" pageHeight="270" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="session" value="Session" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;swimlane;startSize=38;horizontal=1;rounded=0;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="40" width="230" height="125" />
+        </mxCell>
+        <mxCell id="session-attributes" value="id : String&lt;br&gt;expiresAt : Integer [0..1]" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="52" y="86" width="206" height="73" />
+        </mxCell>
+        <mxCell id="user" value="User" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;swimlane;startSize=38;horizontal=1;rounded=0;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="420" y="40" width="230" height="185" />
+        </mxCell>
+        <mxCell id="user-attributes" value="ID : Integer&lt;br&gt;firstName : String&lt;br&gt;lastName : String&lt;br&gt;Login : String&lt;br&gt;Password : String" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="432" y="86" width="206" height="133" />
+        </mxCell>
+        <mxCell id="color" value="Color" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;swimlane;startSize=38;horizontal=1;rounded=0;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="840" y="40" width="230" height="145" />
+        </mxCell>
+        <mxCell id="color-attributes" value="ID : Integer&lt;br&gt;UserId : Integer&lt;br&gt;Name : String" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="852" y="86" width="206" height="93" />
+        </mxCell>
+        <mxCell id="identifies" value="identifies" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontFamily=Helvetica;fontSize=14;fontColor=#000000;strokeColor=#000000;strokeWidth=1.3;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;jettySize=auto;edgeStyle=none;endArrow=none;exitX=1;exitY=0.56;entryX=0;entryY=0.378378;" edge="1" parent="1" source="session" target="user">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="owns" value="owns" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontFamily=Helvetica;fontSize=14;fontColor=#000000;strokeColor=#000000;strokeWidth=1.3;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;jettySize=auto;edgeStyle=none;endArrow=none;exitX=1;exitY=0.378378;entryX=0;entryY=0.482759;" edge="1" parent="1" source="user" target="color">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="sessions" value="0..*" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;text;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="278" y="77" width="45" height="25" />
+        </mxCell>
+        <mxCell id="identity" value="0..1" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;text;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="367" y="77" width="45" height="25" />
+        </mxCell>
+        <mxCell id="one" value="1" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;text;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="658" y="77" width="45" height="25" />
+        </mxCell>
+        <mxCell id="many" value="0..*" style="html=1;whiteSpace=wrap;fontFamily=Helvetica;fontSize=16;fontColor=#000000;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=1.5;text;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="786" y="77" width="45" height="25" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
