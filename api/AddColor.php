@@ -33,12 +33,12 @@ $user = requireUser();
 	function sendResultInfoAsJson( $obj )
 	{
 		header('Content-type: application/json');
-		echo $obj;
+		echo json_encode($obj, JSON_THROW_ON_ERROR);
 	}
 
 	function returnWithError( $err )
 	{
-		$retValue = '{"error":"' . $err . '"}';
+		$retValue = ['error' => $err];
 		sendResultInfoAsJson( $retValue );
 	}
 
