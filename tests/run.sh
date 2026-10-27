@@ -10,3 +10,5 @@ trap '"${compose[@]}" down --volumes --remove-orphans >/dev/null' EXIT
 node --check public/js/code.js
 address=$("${compose[@]}" port web 8080)
 COLORS_TEST_URL="http://$address" node --test tests/api.test.mjs tests/browser.test.mjs
+"${compose[@]}" stop database
+COLORS_TEST_URL="http://$address" node --test tests/database-failure.test.mjs

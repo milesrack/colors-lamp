@@ -1,165 +1,121 @@
 const urlBase = '/api';
 const extension = 'php';
 
+function request(endpoint, body, feedbackId, onSuccess)
+{
+    const feedback = document.getElementById(feedbackId);
+    feedback.textContent = '';
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', urlBase + '/' + endpoint + '.' + extension, true);
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    xhr.timeout = 15000;
+    xhr.onerror = function ()
+    {
+        feedback.textContent = 'Unable to connect. Please try again.';
+    };
+    xhr.ontimeout = function ()
+    {
+        feedback.textContent = 'Request timed out. Please try again.';
+    };
+    xhr.onreadystatechange = function ()
+    {
+        if (this.readyState !== 4) return;
+        if (this.status === 0) return;
+        if (this.status === 401 && endpoint !== 'Login')
+        {
+            window.location.href = 'index.html';
+            return;
+        }
+        try
+        {
+            const data = JSON.parse(xhr.responseText);
+            if (!data || Array.isArray(data) || typeof data.error !== 'string')
+            {
+                throw new Error('Invalid server response');
+            }
+            if (this.status < 200 || this.status >= 300 || data.error)
+            {
+                feedback.textContent = data.error || 'Request failed. Please try again.';
+                return;
+            }
+            onSuccess(data);
+        }
+        catch (error)
+        {
+            feedback.textContent = 'Invalid server response. Please try again.';
+        }
+    };
+    try
+    {
+        xhr.send(JSON.stringify(body));
+    }
+    catch (error)
+    {
+        feedback.textContent = 'Unable to connect. Please try again.';
+    }
+}
+
+function validateUser(user)
+{
+    if (!Number.isInteger(user.id) || user.id < 1 ||
+        typeof user.firstName !== 'string' || typeof user.lastName !== 'string')
+    {
+        throw new Error('Invalid server response');
+    }
+}
+
 function doLogin()
 {
-
-		let login = document.getElementById("loginName").value;
-		let password = document.getElementById("loginPassword").value;
-
-		document.getElementById("loginResult").textContent = "";
-
-		let tmp = {login:login,password:password};
-
-	let jsonPayload = JSON.stringify( tmp );
-
-	let url = urlBase + '/Login.' + extension;
-
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try
-	{
-		xhr.onreadystatechange = function()
-		{
-			if (this.readyState == 4 && this.status == 200)
-			{
-				let jsonObject = JSON.parse( xhr.responseText );
-				let userId = jsonObject.id;
-
-				if( userId < 1 )
-				{
-					document.getElementById("loginResult").textContent = "User/Password combination incorrect";
-					return;
-				}
-
-
-				window.location.href = "color.html";
-			}
-		};
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		document.getElementById("loginResult").textContent = err.message;
-	}
-
+    request('Login', {
+        login: document.getElementById('loginName').value,
+        password: document.getElementById('loginPassword').value,
+    }, 'loginResult', function (user)
+    {
+        validateUser(user);
+        window.location.href = 'color.html';
+    });
 }
 
 function loadSession()
 {
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", urlBase + '/Session.' + extension, true);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onreadystatechange = function()
+    request('Session', {}, 'userName', function (user)
     {
-        if (this.readyState != 4) return;
-        if (this.status == 401)
-        {
-            window.location.href = "index.html";
-        }
-        else if (this.status == 200)
-        {
-            let user = JSON.parse(xhr.responseText);
-            document.getElementById("userName").textContent = "Logged in as " + user.firstName + " " + user.lastName;
-        }
-    };
-    xhr.send("{}");
+        validateUser(user);
+        document.getElementById('userName').textContent = 'Logged in as ' + user.firstName + ' ' + user.lastName;
+    });
 }
 
 function doLogout()
 {
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", urlBase + '/Logout.' + extension, true);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-    xhr.onreadystatechange = function()
+    request('Logout', {}, 'userName', function ()
     {
-        if (this.readyState == 4 && (this.status == 200 || this.status == 401))
-        {
-            window.location.href = "index.html";
-        }
-    };
-    xhr.send("{}");
+        window.location.href = 'index.html';
+    });
 }
 
 function addColor()
 {
-	let newColor = document.getElementById("colorText").value;
-	document.getElementById("colorAddResult").textContent = "";
-
-	let tmp = {color:newColor};
-	let jsonPayload = JSON.stringify( tmp );
-
-	let url = urlBase + '/AddColor.' + extension;
-
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try
-	{
-		xhr.onreadystatechange = function()
-		{
-            if (this.readyState == 4 && this.status == 401)
-            {
-                window.location.href = "index.html";
-                return;
-            }
-			if (this.readyState == 4 && this.status == 200)
-			{
-				document.getElementById("colorAddResult").textContent = "Color has been added";
-			}
-		};
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		document.getElementById("colorAddResult").textContent = err.message;
-	}
-
+    request('AddColor', { color: document.getElementById('colorText').value }, 'colorAddResult', function ()
+    {
+        document.getElementById('colorAddResult').textContent = 'Color has been added';
+    });
 }
 
 function searchColor()
 {
-	let srch = document.getElementById("searchText").value;
-	document.getElementById("colorSearchResult").textContent = "";
-
-
-	let tmp = {search:srch};
-	let jsonPayload = JSON.stringify( tmp );
-
-	let url = urlBase + '/SearchColors.' + extension;
-
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try
-	{
-		xhr.onreadystatechange = function()
-		{
-            if (this.readyState == 4 && this.status == 401)
-            {
-                window.location.href = "index.html";
-                return;
-            }
-			if (this.readyState == 4 && this.status == 200)
-			{
-				document.getElementById("colorSearchResult").textContent = "Color(s) has been retrieved";
-				let jsonObject = JSON.parse( xhr.responseText );
-
-                let list = document.getElementById("colorList");
-                list.replaceChildren();
-                for (let i = 0; i < jsonObject.results.length; i++)
-                {
-                    if (i > 0) list.append(document.createElement("br"));
-                    list.append(document.createTextNode(jsonObject.results[i]));
-                }
-			}
-		};
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		document.getElementById("colorSearchResult").textContent = err.message;
-	}
-
+    const list = document.getElementById('colorList');
+    list.replaceChildren();
+    request('SearchColors', { search: document.getElementById('searchText').value }, 'colorSearchResult', function (data)
+    {
+        if (!Array.isArray(data.results) || !data.results.every(color => typeof color === 'string'))
+        {
+            throw new Error('Invalid server response');
+        }
+        for (let i = 0; i < data.results.length; i++)
+        {
+            if (i > 0) list.append(document.createElement('br'));
+            list.append(document.createTextNode(data.results[i]));
+        }
+        document.getElementById('colorSearchResult').textContent = data.results.length ? 'Color(s) has been retrieved' : 'No colours found';
+    });
 }

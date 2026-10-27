@@ -1,8 +1,6 @@
 <?php
 
-require_once dirname(__DIR__) . '/config/session.php';
-requireJsonPost();
-startSession();
+require_once dirname(__DIR__) . '/config/api.php';
 $user = requireUser();
-header('Content-Type: application/json');
-echo json_encode($user + ['error' => '']);
+readRequest();
+sendJson($user + ['error' => '']);

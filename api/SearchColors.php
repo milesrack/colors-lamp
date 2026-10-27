@@ -1,69 +1,20 @@
 <?php
 
-require_once dirname(__DIR__) . '/config/session.php';
-requireJsonPost();
-startSession();
+require_once dirname(__DIR__) . '/config/api.php';
 $user = requireUser();
+$data = readRequest();
+$search = '%' . requireString($data, 'search', 255, true) . '%';
+$userId = $user['id'];
 
-	$inData = getRequestInfo();
-
-	$searchResults = [];
-	$searchCount = 0;
-
-    $conn = require dirname(__DIR__) . '/config/database.php';
-	if ($conn->connect_error)
-	{
-		returnWithError( $conn->connect_error );
-	}
-	else
-	{
-		$stmt = $conn->prepare("select Name from Colors where Name like ? and UserID=?");
-		$colorName = "%" . $inData["search"] . "%";
-		$stmt->bind_param("ss", $colorName, $user["id"]);
-		$stmt->execute();
-
-		$result = $stmt->get_result();
-
-		while($row = $result->fetch_assoc())
-		{
-            $searchCount++;
-            $searchResults[] = $row["Name"];
-		}
-
-		if( $searchCount == 0 )
-		{
-			returnWithError( "No Records Found" );
-		}
-		else
-		{
-			returnWithInfo( $searchResults );
-		}
-
-		$stmt->close();
-		$conn->close();
-	}
-
-	function getRequestInfo()
-	{
-		return json_decode(file_get_contents('php://input'), true);
-	}
-
-	function sendResultInfoAsJson( $obj )
-	{
-		header('Content-type: application/json');
-		echo json_encode($obj, JSON_THROW_ON_ERROR);
-	}
-
-	function returnWithError( $err )
-	{
-		$retValue = ['id' => 0, 'firstName' => '', 'lastName' => '', 'error' => $err];
-		sendResultInfoAsJson( $retValue );
-	}
-
-	function returnWithInfo( $searchResults )
-	{
-		$retValue = ['results' => $searchResults, 'error' => ''];
-		sendResultInfoAsJson( $retValue );
-	}
-
-?>
+$conn = require dirname(__DIR__) . '/config/database.php';
+$stmt = $conn->prepare('SELECT Name FROM Colors WHERE Name LIKE ? AND UserId = ? ORDER BY ID');
+$stmt->bind_param('si', $search, $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+$colors = [];
+while ($row = $result->fetch_assoc()) {
+    $colors[] = $row['Name'];
+}
+$stmt->close();
+$conn->close();
+sendJson(['results' => $colors, 'error' => '']);

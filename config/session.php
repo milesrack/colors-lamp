@@ -4,18 +4,12 @@ function requireJsonPost(): void
 {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         header('Allow: POST');
-        http_response_code(405);
-        header('Content-Type: application/json');
-        echo '{"error":"Method not allowed"}';
-        exit;
+        sendJson(['error' => 'Method not allowed'], 405);
     }
 
     $contentType = strtolower(trim(explode(';', $_SERVER['CONTENT_TYPE'] ?? '')[0]));
     if ($contentType !== 'application/json') {
-        http_response_code(415);
-        header('Content-Type: application/json');
-        echo '{"error":"Content-Type must be application/json"}';
-        exit;
+        sendJson(['error' => 'Content-Type must be application/json'], 415);
     }
 }
 
@@ -53,10 +47,7 @@ function requireUser(): array
 {
     if (!isset($_SESSION['user'], $_SESSION['expiresAt']) || $_SESSION['expiresAt'] <= time()) {
         destroySession();
-        http_response_code(401);
-        header('Content-Type: application/json');
-        echo '{"error":"Authentication required"}';
-        exit;
+        sendJson(['error' => 'Authentication required'], 401);
     }
     return $_SESSION['user'];
 }
