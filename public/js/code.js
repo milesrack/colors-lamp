@@ -1,3 +1,5 @@
+/* exported doLogin, loadSession, doLogout, addColor, searchColor */
+
 const urlBase = '/api';
 const extension = 'php';
 
@@ -40,7 +42,7 @@ function request(endpoint, body, feedbackId, onSuccess)
             }
             onSuccess(data);
         }
-        catch (error)
+        catch
         {
             feedback.textContent = 'Invalid server response. Please try again.';
         }
@@ -49,7 +51,7 @@ function request(endpoint, body, feedbackId, onSuccess)
     {
         xhr.send(JSON.stringify(body));
     }
-    catch (error)
+    catch
     {
         feedback.textContent = 'Unable to connect. Please try again.';
     }
