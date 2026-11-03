@@ -1,0 +1,18 @@
+{
+  "name": "colors-lamp",
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "npm run lint:html && npm run lint:css && npm run lint:js",
+    "lint:html": "htmlhint \"public/**/*.html\"",
+    "lint:css": "stylelint \"public/**/*.css\" --max-warnings 0",
+    "lint:js": "eslint \"public/**/*.js\" --max-warnings 0"
+  },
+  "private": true,
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.14.0",
+    "globals": "17.14.0",
+    "htmlhint": "1.9.2",
+    "stylelint": "17.16.0"
+  }
+}

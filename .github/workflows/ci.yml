@@ -1,0 +1,38 @@
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  frontend-lint:
+    name: Frontend lint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24.17.0'
+          cache: npm
+      - run: npm ci
+      - name: Lint HTML
+        run: npm run lint:html
+      - name: Lint CSS
+        run: npm run lint:css
+      - name: Lint JavaScript
+        run: npm run lint:js
+
+  php-syntax:
+    name: PHP syntax
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - name: Check PHP syntax
+        run: git ls-files -z -- '*.php' | xargs -0 -r -n 1 php -l
