@@ -6,7 +6,9 @@
     "lint:html": "htmlhint \"public/**/*.html\"",
     "lint:css": "stylelint \"public/**/*.css\" --max-warnings 0",
     "lint:js": "eslint \"public/**/*.js\" \"tests/**/*.js\" jest.config.cjs --max-warnings 0",
-    "test:unit": "jest --selectProjects unit --runInBand"
+    "test:unit": "jest --selectProjects unit --runInBand",
+    "test:integration": "bash tests/run.sh",
+    "test": "npm run test:unit && npm run test:integration"
   },
   "private": true,
   "devDependencies": {
