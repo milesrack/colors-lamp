@@ -189,11 +189,27 @@ Open `https://YOUR_DOMAIN`, replacing `YOUR_DOMAIN` with your domain.
 
 Log in as `demo` using the password you chose. Add a colour, then search for it.
 
+## Testing
+
+Requires Node.js 24 and Docker with Docker Compose.
+
+```sh
+npm ci
+npm run lint
+npm test
+```
+
+Run individual test suites:
+
+```sh
+npm run test:unit
+npm run test:integration
+```
+
 ## Assumptions and Limitations
 
-- No registration functionality, so accounts are created in manually MySQL.
-- No server-side session management.
-- Limited validation and error handling.
+- No registration functionality; accounts are created manually in MySQL.
+- No client-side form validation.
 - Colours cannot be deleted.
 
 ## License
