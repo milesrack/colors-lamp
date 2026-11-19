@@ -1,8 +1,6 @@
-import assert from 'node:assert/strict';
-import { test } from 'node:test';
 
 const base = process.env.COLORS_TEST_URL;
-assert.ok(base, 'Run through tests/run.sh to use the disposable database');
+if (!base) throw new Error('Run npm run test:integration to use the disposable database');
 
 for (const [endpoint, body] of [
     ['Login', { login: 'alpha', password: 'test-password' }],
@@ -15,7 +13,7 @@ for (const [endpoint, body] of [
             headers: { 'Content-Type': 'application/json', Cookie: endpoint === 'Login' ? '' : 'colors_session=colors-database-failure-test' },
             body: JSON.stringify(body),
         });
-        assert.equal(response.status, 500);
-        assert.deepEqual(await response.json(), { error: 'Unable to process request' });
+        expect(response.status).toBe(500);
+        expect(await response.json()).toEqual({ error: 'Unable to process request' });
     });
 }

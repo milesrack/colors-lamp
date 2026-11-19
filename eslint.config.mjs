@@ -11,4 +11,16 @@ export default defineConfig([
             globals: globals.browser,
         },
     },
+    {
+        files: ['tests/**/*.js', 'jest.config.cjs'],
+        extends: [js.configs.recommended],
+        languageOptions: {
+            sourceType: 'commonjs',
+            globals: { ...globals.node, ...globals.jest },
+        },
+    },
+    {
+        files: ['tests/unit/**/*.js'],
+        languageOptions: { globals: globals.browser },
+    },
 ]);
